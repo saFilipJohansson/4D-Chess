@@ -1,0 +1,14 @@
+xx xx xx xx xx xx .. .. xx xx xx xx xx xx
+xx xx xx xx xx .. .. .. .. xx xx xx xx xx
+xx xx xx xx .. .. .. .. .. .. xx xx xx xx
+xx xx xx bR bN bB bQ bK bB bN bR xx xx xx
+xx xx .. bp bp bp bp bp bp bp bp .. xx xx
+xx .. .. .. .. .. .. .. .. .. .. .. .. xx
+.. .. .. .. .. .. .. .. .. .. .. .. .. ..
+.. .. .. .. .. .. .. .. .. .. .. .. .. ..
+xx .. .. .. .. .. .. .. .. .. .. .. .. xx
+xx xx .. wp wp wp wp wp wp wp wp .. xx xx
+xx xx xx wR wN wB wQ wK wB wN wR xx xx xx
+xx xx xx xx .. .. .. .. .. .. xx xx xx xx
+xx xx xx xx xx .. .. .. .. xx xx xx xx xx
+xx xx xx xx xx xx .. .. xx xx xx xx xx xx

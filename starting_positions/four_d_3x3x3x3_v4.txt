@@ -1,0 +1,13 @@
+----------------------------
+|bR bN bR|bN bK bN|bR bN bR|
+|bp bp bp|bp bp bp|bp bp bp|
+|.. .. ..|.. .. ..|.. .. ..|
+|--------------------------|
+|bp bp bp|bp bp bp|bp bp bp|
+|.. .. ..|.. xx ..|.. .. ..|
+|wp wp wp|wp wp wp|wp wp wp|
+|--------------------------|
+|.. .. ..|.. .. ..|.. .. ..|
+|wp wp wp|wp wp wp|wp wp wp|
+|wR wN wR|wN wK wN|wR wN wR|
+----------------------------

@@ -1,0 +1,21 @@
+-------------------------------------------------
+|bB bB bB bB|bB bQ bQ bB|bB bQ bK bB|bB bB bB bB|
+|bR bN bN bR|bN bR bR bN|bN bR bR bN|bR bN bN bR|
+|bp bp bp bp|bp bp bp bp|bp bp bp bp|bp bp bp bp|
+|.. .. .. ..|.. .. .. ..|.. .. .. ..|.. .. .. ..|
+|-----------------------------------------------|
+|bR bN bN bR|bN bR bR bN|bN bR bR bN|bR bN bN bR|
+|bp bp bp bp|bp bp bp bp|bp bp bp bp|bp bp bp bp|
+|.. .. .. ..|.. .. .. ..|.. .. .. ..|.. .. .. ..|
+|wp wp wp wp|wp wp wp wp|wp wp wp wp|wp wp wp wp|
+|-----------------------------------------------|
+|bp bp bp bp|bp bp bp bp|bp bp bp bp|bp bp bp bp|
+|.. .. .. ..|.. .. .. ..|.. .. .. ..|.. .. .. ..|
+|wp wp wp wp|wp wp wp wp|wp wp wp wp|wp wp wp wp|
+|wR wN wN wR|wN wR wR wN|wN wR wR wN|wR wN wN wR|
+|-----------------------------------------------|
+|.. .. .. ..|.. .. .. ..|.. .. .. ..|.. .. .. ..|
+|wp wp wp wp|wp wp wp wp|wp wp wp wp|wp wp wp wp|
+|wR wN wN wR|wN wR wR wN|wN wR wR wN|wR wN wN wR|
+|wB wB wB wB|wB wQ wQ wB|wB wQ wK wB|wB wB wB wB|
+-------------------------------------------------
