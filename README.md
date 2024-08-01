@@ -2,10 +2,10 @@
 A general chess program that supports different board shapes (including higher dimensional ones) and different combinations of rules. This readme contains a list of features as well as examples of variants with images. This software is proprietary but you can clone and compile it for personal use on your own computer. You need SDL2 and SDL2_image. Modify the makefile as necessary, and the main.c.
 
 ## List of features - variants are defined using any combination of these features
-- Any number of dimensions - 2,3,4,14,anything (actually 14 is the limit)
+- Any number of dimensions - 2, 3, 4, 14, anything (actually 14 is the limit. We don't have enough pixels on our screens for more than 14 dimensional chess.).
 - Any side lengths - Chess on a 6x3x4x2x5 hyperrectangle, why not? Also: why?
 - Any dimensions wrapping around the edge - move one step forward from D8 and arrive on D1
-- "Forward" and "non-forward" dimensions. Pawns normally move forward in forward dimensions, and capture diagonally on step forward in forward dimensions and one step in non-forward dimension.
+- "Forward" and "non-forward" dimensions. Pawns normally move forward in forward dimensions, and capture diagonally one step forward in a forward dimensions and one step in a non-forward dimension.
 - Pawns moving in specified direction. Forward/backwards in forward dimensions, or forward/backwards in non-forward dimensions (ie right/left).
 - Any number of moves per turn for each player. Allow or don't allow moving the same piece twice in one turn.
 - Multiple different win conditions - Checkmate, king captured, king arrived to target square
