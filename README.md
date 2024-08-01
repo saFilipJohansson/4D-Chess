@@ -1,5 +1,5 @@
 # 4D-Chess
-Examples of 4D chess and other variants I've invented and implemented. The code is private for now.
+A general chess program that supports different board shapes (including higher dimensional ones) and different combinations of rules. This readme contains a list of features as well as examples of variants with images.
 
 ## List of features - variants are defined using any combination of these features
 - Any number of dimensions - 2,3,4,14,anything (actually 14 is the limit)
@@ -25,6 +25,9 @@ Examples of 4D chess and other variants I've invented and implemented. The code 
 - Variant maker - define the board shape and rules yourself
 - Engine that can play any variant
 - Proper UI and game selection
+
+## Philosophy
+I like chess variants that are basically normal chess but with one or two twists. Variants that anyone who knows the rules of chess will immediately understand how to play. None of the variants here uses pieces other than the normal ones. Now, the higher dimensional variants are obviously not easy, since most of us have some trouble thinking in more than three dimensions.
 
 ## Examples of variants
 8x8 chess but on a 10x10 board\
