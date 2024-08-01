@@ -5,6 +5,7 @@ CC = gcc
 CPPFLAGS = -I/usr/local/include/SDL2
 #CPPFLAGS = -I.
 CFLAGS  = -Wall -Wextra -Wpedantic
+CFLAGS	+= -std=c99
 #CFLAGS  += -O2
 CFLAGS  += -O0 -g
 LDFLAGS = -L/usr/local/lib
