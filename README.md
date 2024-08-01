@@ -27,8 +27,8 @@ Examples of 4D chess and other variants I've invented and implemented. The code 
 - Proper UI and game selection
 
 ## Examples of variants
-8x8 chess but on a 10x10 board
-<img src="github_images/10x10_chess.png" alt="10x10" width="200"/>
+8x8 chess but on a 10x10 board\
+<img src="github_images/10x10_chess.png" alt="10x10" width="400"/>
 
 Long range chess, but you move twice. The two moves has to be with different pieces.
 ![alt text](github_images/long_range_chess.png)
