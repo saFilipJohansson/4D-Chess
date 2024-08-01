@@ -46,4 +46,4 @@ A third version of 4D chess. Note that if there was a white bishop on for exampl
 <img src="github_images/4d_chess3.png" alt="4d_chess3" width="500"/>
 
 Ten move chess. White makes five moves, and then it is ten moves per turn until a king is captured. The moves have to be with different pieces. Is this variant even remotely playable? I think so.\
-<img src="github_images/ten_move_chess.png" alt="ten_move_chess" width="500"/>
+<img src="github_images/10_move_chess.png" alt="10_move_chess" width="500"/>
