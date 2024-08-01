@@ -28,19 +28,20 @@ Examples of 4D chess and other variants I've invented and implemented. The code 
 
 ## Examples of variants
 8x8 chess but on a 10x10 board\
-<img src="github_images/10x10_chess.png" alt="10x10" width="400"/>
+<img src="github_images/10x10_chess.png" alt="10x10" width="500"/>
 
 Long range chess, but you move twice. The two moves has to be with different pieces.
-![alt text](github_images/long_range_chess.png)
+<img src="github_images/long_range_chess.png" alt="long_range_chess" width="500"/>
 
 4D chess. It's chess on four dimensional hypercube.
-![alt text](github_images/4d_chess1.png)
+<img src="github_images/4d_chess1.png" alt="4d_chess1" width="500"/>
 
 Another version of 4D chess, here on a 3x3x3x3 hypercube.
-![alt text](github_images/4d_chess2.png)
+<img src="github_images/4d_chess2.png" alt="4d_chess2" width="500"/>
 
 A third version of 4D chess. Note that if there was a white bishop on for example A1a1, it would be able to capture the black piece on A3a3 on move one. Defining a reasonable starting position is tricky for high dimensional chess.
-![alt text](github_images/4d_chess1.png)
+<img src="github_images/4d_chess3.png" alt="4d_chess3" width="500"/>
 
 Ten move chess. White makes five moves, and then it is ten moves per turn until a king is captured. The moves have to be with different pieces. Is this variant even remotely playable? I think so.
 ![alt text](github_images/4d_chess1.png)
+<img src="github_images/ten_move_chess.png" alt="ten_move_chess" width="500"/>
