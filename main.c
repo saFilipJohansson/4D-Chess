@@ -12,7 +12,7 @@ int main() {
     //enum Variant variant = FOUR_D_4X4X4X4_V1_CHESS;       //
     //enum Variant variant = GRAVITY_CHESS;
     //enum Variant variant = TWO_MOVES_CHESS;
-    //enum Variant variant = TEN_MOVES_CHESS;
+    enum Variant variant = TEN_MOVES_CHESS;
     //enum Variant variant = MOVE_TO_ANY_SQUARE_CHESS;
     
     //enum Variant variant = STANDARD_CHESS;

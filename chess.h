@@ -180,18 +180,3 @@ bool check_if_move_among_moves(struct Move move, struct Move moves[]);
 void copy_int_array         (int *from, int *to, int length);
 #endif // CHESS_H
 
-/* List of features:
- * Any number of dimensions
- * Any side lengths
- * Non-(hyper)rectangle board shapes
- * Any dimensions wrapping around the edge
- * Parts of the board where only one player is allowed to be
- * Parts of the board where only one player is allowed to capture pieces
- * Any number of moves per turn for each piece color
- * More than two players
- * Multiple different win conditions
- * Simultaneous moves
- * Special variants such as capture-the-flag-chess, gravity-chess, invincible-king-chess
- * Define where pawns promote. Define which pieces other than pawns that can promote
- * Engine that can play any variant
- */
