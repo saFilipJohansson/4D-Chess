@@ -1,5 +1,5 @@
 # 4D-Chess
-A general chess program that supports different board shapes (including higher dimensional ones) and different combinations of rules. This readme contains a list of features as well as examples of variants with images.
+A general chess program that supports different board shapes (including higher dimensional ones) and different combinations of rules. This readme contains a list of features as well as examples of variants with images. This software is proprietary but you can clone and compile it for personal use on your own computer. You need SDL2 and SDL2_image. Modify the makefile as necessary, and the main.c.
 
 ## List of features - variants are defined using any combination of these features
 - Any number of dimensions - 2,3,4,14,anything (actually 14 is the limit)
@@ -14,7 +14,7 @@ A general chess program that supports different board shapes (including higher d
 - Define where pawns promote. Define which pieces other than pawns that can promote
 
 ## List of upcoming features
-- Non-(hyper)rectangle board shapes - circle, tetrahedon, whatever
+- Non-(hyper)rectangle board shapes - circle, square with a hole in it, tetrahedon, whatever
 - Parts of the board where only one player is allowed to be
 - Parts of the board where only one player is allowed to capture pieces
 - More than two players
@@ -33,18 +33,18 @@ I like chess variants that are basically normal chess but with one or two twists
 8x8 chess but on a 10x10 board\
 <img src="github_images/10x10_chess.png" alt="10x10" width="500"/>
 
-Long range chess, but you move twice. The two moves has to be with different pieces.
+Long range chess, but you move twice. The two moves has to be with different pieces.\
 <img src="github_images/long_range_chess.png" alt="long_range_chess" width="500"/>
 
-4D chess. It's chess on four dimensional hypercube.
+4D chess. It's chess on four dimensional hypercube, here visualized in two dimensions. The selected pawn can move one or two steps forward either in "dimension 2" or in "dimension 4", and could capture diagonally to any of the squares highlighed in light blue if there was an opponents piece there.\
 <img src="github_images/4d_chess1.png" alt="4d_chess1" width="500"/>
 
-Another version of 4D chess, here on a 3x3x3x3 hypercube.
+Another version of 4D chess, here on a 3x3x3x3 hypercube.\
 <img src="github_images/4d_chess2.png" alt="4d_chess2" width="500"/>
 
-A third version of 4D chess. Note that if there was a white bishop on for example A1a1, it would be able to capture the black piece on A3a3 on move one. Defining a reasonable starting position is tricky for high dimensional chess.
+A third version of 4D chess. Note that if there was a white bishop on for example A1a1, it would be able to capture the black piece on A3a3 on move one. Defining a reasonable starting position is tricky for high dimensional chess.\
 <img src="github_images/4d_chess3.png" alt="4d_chess3" width="500"/>
 
-Ten move chess. White makes five moves, and then it is ten moves per turn until a king is captured. The moves have to be with different pieces. Is this variant even remotely playable? I think so.
+Ten move chess. White makes five moves, and then it is ten moves per turn until a king is captured. The moves have to be with different pieces. Is this variant even remotely playable? I think so.\
 ![alt text](github_images/4d_chess1.png)
 <img src="github_images/ten_move_chess.png" alt="ten_move_chess" width="500"/>
