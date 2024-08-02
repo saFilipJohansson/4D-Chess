@@ -42,7 +42,7 @@ Long range chess, but you move twice. The two moves has to be with different pie
 3D chess. Chess on a 5x5x5 cube. Imagine the leftmost one being on the bottom and the other four stacking on top.\
 <img src="github_images/3d_chess.png" alt="4d_chess1" width="1000"/>
 
-Another version of 4D chess, here on a 3x3x3x3 hypercube. Note that that none of the pieces are attacked, though after any move by white that piece will be attacked.\
+Another version of 4D chess, here on a 3x3x3x3 hypercube. Note that that none of the pieces are attacked, though after any move by white that piece will be attacked. By the way, kings only move horizontally in higher-dimensional chess. Checkmating would otherwise be way too difficult.\
 <img src="github_images/4d_chess2.png" alt="4d_chess2" width="500"/>
 
 A third version of 4D chess. Note that if there was a white bishop on for example A1a1, it would be able to capture the black piece on A3a3 on move one. Defining a reasonable starting position is tricky for high dimensional chess.\
