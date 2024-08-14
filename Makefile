@@ -20,7 +20,7 @@ all: $(TARGETS)
 main: main.c chess_init.c chess_logic.c graphics.c
 	$(CC) $(CPPFLAGS) $(CFLAGS) $(LDFLAGS) $(LDLIBS) -o main main.c chess_init.c chess_logic.c chess_utils.c graphics.c
 
-# Note: .c file chess_logic.c included in chess_logic_tests. Is dependency on chess_logic.c necessary? (probably)
+# Note: .c file chess_logic.c included in chess_logic_tests.
 test_chess_logic: chess_logic.c unit_tests/chess_logic_tests.c chess_init.c chess_logic.c
 	$(CC) $(CPPFLAGS) $(CFLAGS) $(LDFLAGS) $(LDLIBS) -o test_chess_logic unit_tests/chess_logic_tests.c chess_init.c chess_utils.c
 
