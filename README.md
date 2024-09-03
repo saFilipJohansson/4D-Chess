@@ -8,7 +8,7 @@ A general chess program that supports different board shapes (including higher d
 4D chess. It's chess on a four dimensional hypercube, here visualized in two dimensions. The selected pawn can move one or two steps forward either in "dimension two" or in "dimension four", and could capture diagonally to any of the squares highlighed in light blue if there was an opponents piece there.\
 <img src="github_images/4d_chess1.png" alt="4d_chess1" width="500"/>
 
-Another version of 4D chess, here on a 3x3x3x3 hypercube. Note that that none of the pieces are attacked, though after any move by white that piece will be attacked. By the way, kings only move horizontally in higher-dimensional chess. Checkmating would otherwise be way too difficult.\
+Another version of 4D chess, here on a 3x3x3x3 hypercube. Note that that none of the pieces are attacked, though after any move by white that piece will be attacked. By the way, kings only move horizontally (not diagonally) in higher-dimensional chess. Checkmating would otherwise be way too difficult.\
 <img src="github_images/4d_chess2.png" alt="4d_chess2" width="500"/>
 
 A third version of 4D chess. Note that if there was a white bishop on for example A1a1, it would be able to capture the black piece on A3a3 on move one. Defining a reasonable starting position is tricky for high dimensional chess. Note also that all pawns are defended.\
