@@ -20,7 +20,7 @@ A third version of 4D chess. Note that if there was a white bishop on for exampl
 Long range chess, but you move twice. The two moves has to be with different pieces.\
 <img src="github_images/long_range_chess.png" alt="long_range_chess" width="500"/>
 
-Ten move chess. White makes five moves, and then it is ten moves per turn until a king is captured. The moves have to be with different pieces. Is this variant even remotely playable? I think so.\
+Ten move chess. White makes five moves (for example the five moves played on the board), and then it is ten moves per turn until a king is captured. The moves have to be with different pieces. Is this variant even remotely playable? I think so.\
 <img src="github_images/10_moves_chess.png" alt="10_moves_chess" width="500"/>
 
 ## List of features - variants are defined using any combination of these features
