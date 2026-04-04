@@ -255,6 +255,7 @@ bool initialize_rules_and_game_state(struct Rules *rules, struct GameState *game
             rules->board_shape[1] = 12;
             rules->dimension_wrapping[0] = true;
             rules->dimension_wrapping[1] = true;
+            rules->promotion_after_x_steps_in_single_dimension = 12;
             game_state->board = parse_board_from_textfile("wrapping_12x12.txt", rules->dimensions, rules->board_shape);
             break;
         case WRAPPING_10X10_CHESS:
@@ -262,6 +263,7 @@ bool initialize_rules_and_game_state(struct Rules *rules, struct GameState *game
             rules->board_shape[1] = 10;
             rules->dimension_wrapping[0] = true;
             rules->dimension_wrapping[1] = true;
+            rules->promotion_after_x_steps_in_single_dimension = 10;
             game_state->board = parse_board_from_textfile("wrapping_10x10.txt", rules->dimensions, rules->board_shape);
             break;
         case WRAPPING_8X14_CHESS:
@@ -283,6 +285,7 @@ bool initialize_rules_and_game_state(struct Rules *rules, struct GameState *game
     return true;
 }
 
+// old, right? Can be removed?
 bool initialize_rules(struct Rules *rules, enum Variant variant) {
     rules->dimensions = 2;
     rules->board_shape[0] = 8; 

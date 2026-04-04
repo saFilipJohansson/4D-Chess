@@ -1,0 +1,7 @@
+----------------------------------------------------------------------------
+|bR bN bR bN bR|bN bB bB bB bN|bR bQ bK bQ bR|bN bB bB bB bN|bR bN bR bN bR|
+|bp bp bp bp bp|bp bp bp bp bp|bp bp bp bp bp|bp bp bp bp bp|bp bp bp bp bp|
+|.. .. .. .. ..|.. .. .. .. ..|.. .. .. .. ..|.. .. .. .. ..|.. .. .. .. ..|
+|wp wp wp wp wp|wp wp wp wp wp|wp wp wp wp wp|wp wp wp wp wp|wp wp wp wp wp|
+|wR wN wR wN wR|wN wB wB wB wN|wR wQ wK wQ wR|wN wB wB wB wN|wR wN wR wN wR|
+----------------------------------------------------------------------------

@@ -3,32 +3,45 @@
 #include "chess.h"
 
 static bool increment_dim_of_square_if_legal(int square[], int dim, int incr, bool dimension_wrapping, int board_shape_dim);
-static void get_pawn_moves  (struct Move moves[], struct Move diagonal_pawn_moves[], int square_index, struct Square board[], 
-                             struct Move last_moves_by_piece_color[PIECE_COLOR_COUNT][MAX_MOVES_PER_TURN], struct Rules *rules);
-//static void get_direct_pawn_captures (struct Move moves[], int square_index, struct Square board[], struct Rules *rules);
-static void get_rook_moves  (struct Move moves[MAX_MOVES_SINGLE_PIECE], int square_index, struct Square board[], 
-                             struct Rules *rules);
-static void get_bishop_moves(struct Move moves[MAX_MOVES_SINGLE_PIECE], int square_index, struct Square board[], 
-                             struct Rules *rules);
-static void get_knight_moves(struct Move moves[MAX_MOVES_SINGLE_PIECE], int square_index, struct Square board[], 
-                             struct Rules *rules);
-static void get_king_moves  (struct Move moves[MAX_MOVES_SINGLE_PIECE], int square_index, bool in_check, struct Square board[], 
-                             struct Rules *rules);
-static int  get_castling_moves (struct Move moves[], int king_square_index, struct Square board[], struct Rules *rules);
-static void get_queen_moves (struct Move moves[MAX_MOVES_SINGLE_PIECE], int square_index, struct Square board[], 
-                             struct Rules *rules);
-static void get_all_moves_to_unoccupied (struct Move moves[], int square_index, struct Square board[], struct Rules *rules);
 
-//static bool piece_color_in_check(enum PieceColor piece_color, int king_square, struct Square *board, struct Rules *rules);
-//static bool move_puts_own_king_in_check(struct Move move, struct Square *board, struct Rules *rules);
-static bool square_is_attacked(int square_index, enum PieceColor attacked_piece_color, struct Square *board, struct Rules *rules);
+static void get_pawn_moves(
+    struct Move moves[], struct Move diagonal_pawn_moves[], int square_index, struct Square board[], 
+    struct Move last_moves_by_piece_color[PIECE_COLOR_COUNT][MAX_MOVES_PER_TURN], struct Rules *rules
+);
+static void get_rook_moves(
+    struct Move moves[MAX_MOVES_SINGLE_PIECE], int square_index, struct Square board[], struct Rules *rules
+);
+static void get_bishop_moves(
+    struct Move moves[MAX_MOVES_SINGLE_PIECE], int square_index, struct Square board[], struct Rules *rules
+);
+static void get_knight_moves(
+    struct Move moves[MAX_MOVES_SINGLE_PIECE], int square_index, struct Square board[], struct Rules *rules
+);
+static void get_king_moves(
+    struct Move moves[MAX_MOVES_SINGLE_PIECE], int square_index, bool in_check, struct Square board[], struct Rules *rules
+);
+static int  get_castling_moves(struct Move moves[], int king_square_index, struct Square board[], struct Rules *rules);
+static void get_queen_moves(
+    struct Move moves[MAX_MOVES_SINGLE_PIECE], int square_index, struct Square board[], struct Rules *rules
+);
+static void get_all_moves_to_unoccupied(struct Move moves[], int square_index, struct Square board[], struct Rules *rules);
+
+static bool move_puts_own_king_in_check(struct Move move, struct Square *board, struct Rules *rules);
 static bool player_is_checkmated(enum PieceColor piece_color, struct GameState *game_state, struct Rules *rules);
 static bool piece_color_king_captured(bool piece_color, struct GameState *game_state, struct Rules *rules);
-
 static void evaluate_gravity(struct Square board[], struct Rules *rules);
 
+//static bool piece_color_in_check(enum PieceColor piece_color, int king_square, struct Square *board, struct Rules *rules);
+
+// todo: remove
+//static struct SquareIsAttackedResult square_is_attacked(int square_index, enum PieceColor attacked_piece_color, 
+        //struct Square *board, struct Rules *rules);
+
+
+
 void get_moves(struct Move moves[MAX_MOVES_SINGLE_PIECE], struct Move diagonal_pawn_moves[MAX_MOVES_SINGLE_PIECE], 
-               int square_index, struct GameState *game_state, struct Rules *rules) {
+        int square_index, struct GameState *game_state, struct Rules *rules) 
+{
     enum PieceType piece_type = game_state->board[square_index].piece.piece_type;
     diagonal_pawn_moves[0].destination_square = -1;
     switch (piece_type) {
@@ -70,7 +83,7 @@ void get_moves(struct Move moves[MAX_MOVES_SINGLE_PIECE], struct Move diagonal_p
         //}
     //}
 
-    for (int i = 0; moves[i].destination_square != -1; ++i) {
+    for (int i = 0; moves[i].destination_square != -1; ++i) {           // TODO consider struct with array and a count instead of sentinel-terminated array
         // King invincible: Remove moves that capture opponents king
         if ((rules->king_invincible)) {
             if (game_state->board[moves[i].destination_square].piece.piece_type == KING) {
@@ -79,8 +92,8 @@ void get_moves(struct Move moves[MAX_MOVES_SINGLE_PIECE], struct Move diagonal_p
                 }
                 --i;
             }
+        // TODO: DONT ALLOW MOVES THAT PUTS OWN KING IN CHECK
         // King not invincible: Remove moves that put own king in check
-        // TODO:
         } //else if (check_mate_win_condition && move_puts_own_king_in_check(moves[i], game_state->board, rules)) {
         //    for (int j = i; moves[j].destination_square != -1; ++j) {
         //        moves[j] = moves[j+1];
@@ -91,7 +104,8 @@ void get_moves(struct Move moves[MAX_MOVES_SINGLE_PIECE], struct Move diagonal_p
 }
 
 struct Move validate_selected_move(int origin_square, int destination_square, struct Move moves[], struct GameState *game_state, 
-                                   struct Rules *rules) {
+                                   struct Rules *rules) 
+{
     struct Move move;
     move.destination_square = -1;
     enum PieceColor piece_color = game_state->board[origin_square].piece.piece_color;
@@ -205,12 +219,13 @@ static bool increment_dim_of_square_if_legal(int square[], int dim, int incr, bo
     }
 }
 
-// assumes there is a pawn at the square
+// assumes there is a pawn at the square. TODO add assert for this
 static void get_pawn_moves(struct Move moves[], struct Move diagonal_pawn_moves[], int square_index, struct Square board[], 
                            struct Move last_moves_by_piece_color[PIECE_COLOR_COUNT][MAX_MOVES_PER_TURN], struct Rules *rules) {
     enum PieceColor piece_color = board[square_index].piece.piece_color;
     int dimensions = rules->dimensions;
-    int origin_square[dimensions];
+    int origin_square[dimensions];          // TODO: consider fixed size array of length max_dimensions instead of VLA (C99)
+                                            // Could alternatively assert that dimensions is less than MAX_DIMENSIONS, and we should be fine.
     square_index_to_square(square_index, origin_square, dimensions, rules->board_shape);
     int destination_square[dimensions];
 
@@ -413,7 +428,8 @@ static void get_rook_moves(struct Move moves[MAX_MOVES_SINGLE_PIECE], int square
             copy_int_array(square, destination_square, dimensions);
             bool stop = false;
             while (!stop) {
-                bool increment_legal = increment_dim_of_square_if_legal(destination_square, dim, direction, rules->dimension_wrapping[dim], rules->board_shape[dim]);
+                bool increment_legal = increment_dim_of_square_if_legal(destination_square, dim, direction, 
+                                                                        rules->dimension_wrapping[dim], rules->board_shape[dim]);
                 if (!increment_legal) {
                     stop = true;
                     continue;
@@ -502,9 +518,12 @@ static void get_knight_moves(struct Move moves[MAX_MOVES_SINGLE_PIECE], int squa
             int increments[4][2] = {{1,1},{1,-1},{-1,1},{-1,-1}};
             for (int i = 0; i < 4; ++i) {
                 copy_int_array(square, destination_square, dimensions);
-                bool increment1_legal = increment_dim_of_square_if_legal(destination_square, dim1, increments[i][0], rules->dimension_wrapping[dim1], rules->board_shape[dim1]); // TODO make increment_dim_of_square_if_legal deal with one dimension wrapping and non-rectangle board shapes. It should increment both dims simultaneously and then move if wrapping
-                bool increment2_legal = increment_dim_of_square_if_legal(destination_square, dim1, increments[i][0], rules->dimension_wrapping[dim1], rules->board_shape[dim1]); // TODO make increment_dim_of_square_if_legal deal with one dimension wrapping and non-rectangle board shapes. It should increment both dims simultaneously and then move if wrapping
-                bool increment3_legal = increment_dim_of_square_if_legal(destination_square, dim2, increments[i][1], rules->dimension_wrapping[dim2], rules->board_shape[dim2]);
+                bool increment1_legal = increment_dim_of_square_if_legal(destination_square, dim1, increments[i][0], 
+                                                                    rules->dimension_wrapping[dim1], rules->board_shape[dim1]);
+                bool increment2_legal = increment_dim_of_square_if_legal(destination_square, dim1, increments[i][0], 
+                                                                    rules->dimension_wrapping[dim1], rules->board_shape[dim1]);
+                bool increment3_legal = increment_dim_of_square_if_legal(destination_square, dim2, increments[i][1], 
+                                                                    rules->dimension_wrapping[dim2], rules->board_shape[dim2]);
                 if (!increment1_legal || !increment2_legal || !increment3_legal) {
                     continue;
                 }
@@ -554,17 +573,19 @@ static void get_king_moves(struct Move moves[MAX_MOVES_SINGLE_PIECE], int square
                 increments[5][0] = 1;   increments[5][1] = -1;
                 increments[6][0] = -1;  increments[6][1] = 1;
                 increments[7][0] = -1;  increments[7][1] = -1;
-            } else {
+            } else {    // no diagonal moves for >2 dimensions
                 j = 4;
-                increments[0][0] = 1;   increments[0][1] = 0;
+                increments[0][0] = 1;   increments[0][1] = 0;           // TODO might be duplicate moves here, considering dim1 and dim2
                 increments[1][0] = -1;  increments[1][1] = 0;
                 increments[2][0] = 0;   increments[2][1] = 1;
                 increments[3][0] = 0;   increments[3][1] = -1;
             }
             for (int i = 0; i < j; ++i) {
                 copy_int_array(square, destination_square, dimensions);
-                bool increment1_legal = increment_dim_of_square_if_legal(destination_square, dim1, increments[i][0], rules->dimension_wrapping[dim1], rules->board_shape[dim1]); // TODO make increment_dim_of_square_if_legal deal with one dimension wrapping and non-rectangle board shapes. It should increment both dims simultaneously and then move if wrapping
-                bool increment2_legal = increment_dim_of_square_if_legal(destination_square, dim2, increments[i][1], rules->dimension_wrapping[dim2], rules->board_shape[dim2]);
+                bool increment1_legal = increment_dim_of_square_if_legal(destination_square, dim1, increments[i][0], 
+                                                                        rules->dimension_wrapping[dim1], rules->board_shape[dim1]);
+                bool increment2_legal = increment_dim_of_square_if_legal(destination_square, dim2, increments[i][1], 
+                                                                        rules->dimension_wrapping[dim2], rules->board_shape[dim2]);
                 if (!increment1_legal || !increment2_legal) {
                     continue;
                 }
@@ -741,7 +762,7 @@ static void get_all_moves_to_unoccupied(struct Move moves[], int origin_square, 
 //    bool result = false;
 //
 //    // If the move captures a king (enemy king or own king for diagonal pawn moves) the move is always fine
-//    // what about invincible own king?
+//    // todo: what about invincible own king?
 //    if (board[destination_square].piece.piece_type == KING) {
 //        return false;
 //    }
@@ -941,203 +962,278 @@ static void get_all_moves_to_unoccupied(struct Move moves[], int origin_square, 
     //return true;    // checkmate
 //}
 
-static bool square_is_attacked(int square_index, enum PieceColor attacked_piece_color, struct Square *board, struct Rules *rules) {
-    // Variables
-    int dimensions = rules->dimensions;
-    int square_backup[dimensions];
-    square_index_to_square(square_index, square_backup, dimensions, rules->board_shape);
-    int square[dimensions];
 
-    // Diagonal captures. One step - king or pawn with correct orientation
-    for (int dim1 = 0; dim1 < dimensions; ++dim1) {
-        for (int dim2 = dim1 + 1; dim2 < dimensions; ++dim2) {
-            int increments[4][2] = {{1,1},{1,-1},{-1,1},{-1,-1}};
-            for (int i = 0; i < 4; ++i) {
-                copy_int_array(square_backup, square, dimensions);
-                
-                // One step - kings, bishops, queens, pawns with right orientation
-                bool increment1_legal = increment_dim_of_square_if_legal(square, dim1, increments[i][0], 
-                                                                    rules->dimension_wrapping[dim1], rules->board_shape[dim1]);
-                bool increment2_legal = increment_dim_of_square_if_legal(square, dim2, increments[i][1], 
-                                                                    rules->dimension_wrapping[dim2], rules->board_shape[dim2]);
-                if (!increment1_legal || !increment2_legal) {
-                    continue;
-                }
+// Returns struct with the following members:
+//  square_is_attacked - true if square_index square is attacked by piece of PieceColor other than attacked_piece_color
+//  piece_type - NULL_PIECE_TYPE if there are no squares inbetween the attacked square and the attacker, otherwise ROOK, BISHOP or
+//               KNIGHT
+//  dim1 - defines which line or diagonal the attack occurs across
+//  dim2 - defines which line or diagonal the attack occurs across. Not used if non-diagonal attack (rook, queen)
+//  dim1_increment - 1 or -1. Direction from square_index square the attack occurs from.
+//  dim2_increment - 1 or -1. Direction from square_index square the attack occurs from. Not used if non-diagonal attack (rook,queen)
+//
+// pawn_diagonally true if we consider diagonal pawn captures and false if we consider pawn moves one or two steps forward
+//static struct SquareIsAttackedResult square_is_attacked(int square_index, enum PieceColor attacked_piece_color, bool pawn_diagonally, 
+//        struct Square *board, struct Rules *rules) 
+//{
+//    // Variables
+//    int dimensions = rules->dimensions;
+//    int square_backup[dimensions];
+//    square_index_to_square(square_index, square_backup, dimensions, rules->board_shape);
+//    int square[dimensions];
+//    struct SquareIsAttackedResult result = {false,0,0,0,0};
+//    result.square_is_attacked = true;
+//    result.piece_type = NULL_PIECE_TYPE;
+//
+//    // Diagonal captures. One step - king or pawn with correct orientation
+//    for (int dim1 = 0; dim1 < dimensions; ++dim1) {
+//        for (int dim2 = dim1 + 1; dim2 < dimensions; ++dim2) {
+//            int increments[4][2] = {{1,1},{1,-1},{-1,1},{-1,-1}};
+//            for (int i = 0; i < 4; ++i) {
+//                copy_int_array(square_backup, square, dimensions);
+//                
+//                // One step - kings, bishops, queens, pawns with right orientation
+//                bool increment1_legal = increment_dim_of_square_if_legal(square, dim1, increments[i][0], 
+//                                                                    rules->dimension_wrapping[dim1], rules->board_shape[dim1]);
+//                bool increment2_legal = increment_dim_of_square_if_legal(square, dim2, increments[i][1], 
+//                                                                    rules->dimension_wrapping[dim2], rules->board_shape[dim2]);
+//                if (!increment1_legal || !increment2_legal) {
+//                    continue;
+//                }
+//
+//                int destination_square_index = square_to_square_index(square, dimensions, rules->board_shape);
+//                enum PieceType piece_type = board[destination_square_index].piece.piece_type;
+//                enum PieceColor piece_color = board[destination_square_index].piece.piece_color;
+//
+//                // TODO: change this for team chess
+//                if (piece_type != NULL_PIECE_TYPE && piece_color == attacked_piece_color) { 
+//                    continue;   // piece of own piece_color, continue
+//                }
+//
+//                if (piece_type == BISHOP || piece_type == QUEEN || (piece_type == KING && rules->dimensions > 2)) {
+//                    return result;    // square is attacked
+//                } else if (pawn_diagonally && piece_type == PAWN) {
+//                    bool dim1_forward_dim = rules->is_forward_dimension[dim1];
+//                    bool dim2_forward_dim = rules->is_forward_dimension[dim2];
+//                    enum Direction piece_direction = board[destination_square_index].piece.direction;
+//                    if (dim1_forward_dim) {
+//                        if (    (increments[dim1][0] ==  1 && piece_direction == BACKWARDS && piece_color == PIECE_COLOR_WHITE) ||
+//                                (increments[dim1][0] ==  1 && piece_direction == FORWARDS  && piece_color == PIECE_COLOR_BLACK) ||
+//                                (increments[dim1][0] == -1 && piece_direction == FORWARDS  && piece_color == PIECE_COLOR_WHITE) ||
+//                                (increments[dim1][0] == -1 && piece_direction == BACKWARDS && piece_color == PIECE_COLOR_BLACK)) {
+//                            return result;
+//                        }
+//                    } else {
+//                        if (    (increments[dim1][0] ==  1 && piece_direction == LEFT  && piece_color == PIECE_COLOR_WHITE) ||
+//                                (increments[dim1][0] ==  1 && piece_direction == RIGHT && piece_color == PIECE_COLOR_BLACK) ||
+//                                (increments[dim1][0] == -1 && piece_direction == RIGHT && piece_color == PIECE_COLOR_WHITE) ||
+//                                (increments[dim1][0] == -1 && piece_direction == LEFT  && piece_color == PIECE_COLOR_BLACK)) {
+//                            return result;
+//                        }
+//                    }
+//                    if (dim2_forward_dim) {
+//                        if (    (increments[dim2][1] ==  1 && piece_direction == BACKWARDS && piece_color == PIECE_COLOR_WHITE) ||
+//                                (increments[dim2][1] ==  1 && piece_direction == FORWARDS  && piece_color == PIECE_COLOR_BLACK) ||
+//                                (increments[dim2][1] == -1 && piece_direction == FORWARDS  && piece_color == PIECE_COLOR_WHITE) ||
+//                                (increments[dim2][1] == -1 && piece_direction == BACKWARDS && piece_color == PIECE_COLOR_BLACK)) {
+//                            return result;
+//                        }
+//                    } else {
+//                        if (    (increments[dim2][1] ==  1 && piece_direction == LEFT  && piece_color == PIECE_COLOR_WHITE) ||
+//                                (increments[dim2][1] ==  1 && piece_direction == RIGHT && piece_color == PIECE_COLOR_BLACK) ||
+//                                (increments[dim2][1] == -1 && piece_direction == RIGHT && piece_color == PIECE_COLOR_WHITE) ||
+//                                (increments[dim2][1] == -1 && piece_direction == LEFT  && piece_color == PIECE_COLOR_BLACK)) {
+//                            return result;
+//                        }
+//                    }
+//                }
+//
+//                // Steps beyond first step - only bishops and queens
+//                while (true) {
+//                    bool increment1_legal = increment_dim_of_square_if_legal(square, dim1, increments[i][0], 
+//                                                                    rules->dimension_wrapping[dim1], rules->board_shape[dim1]);
+//                    bool increment2_legal = increment_dim_of_square_if_legal(square, dim2, increments[i][1], 
+//                                                                    rules->dimension_wrapping[dim2], rules->board_shape[dim2]);
+//                    if (!increment1_legal || !increment2_legal) {
+//                        break;  // edge of board
+//                    }
+//
+//                    int destination_square_index = square_to_square_index(square, dimensions, rules->board_shape);
+//                    enum PieceType piece_type = board[destination_square_index].piece.piece_type;
+//                    enum PieceColor piece_color = board[destination_square_index].piece.piece_color;
+//
+//                    if (destination_square_index == square_index) {
+//                        break;      // we are back to original square
+//                    }
+//                    if (piece_type == NULL_PIECE_TYPE) {
+//                        continue;   // square empty, continue
+//                    }
+//                    if (piece_color == attacked_piece_color) {
+//                        break;      // piece of own piece_color
+//                    }
+//                    if (piece_type == BISHOP || piece_type == QUEEN) {
+//                        result.piece_type = BISHOP;
+//                        result.dim1 = dim1;
+//                        result.dim2 = dim2;
+//                        result.dim1_increment = increments[i][0];
+//                        result.dim2_increment = increments[i][1];
+//                        return result;
+//                    }
+//                    break;      // opponents piece but not bishop or queen
+//                }
+//            }
+//        }
+//    }
+//
+//    // Horizontal captures. One step - king
+//    for (int dim = 0; dim < dimensions; ++dim) {
+//        for (int direction = -1; direction <= 1; direction += 2) {
+//            copy_int_array(square_backup, square, dimensions);
+//                
+//            // One step - kings
+//            bool increment_legal = increment_dim_of_square_if_legal(square, dim, direction, 
+//                                                                    rules->dimension_wrapping[dim], rules->board_shape[dim]);
+//            if (!increment_legal) {
+//                continue;
+//            }
+//            int destination_square_index = square_to_square_index(square, dimensions, rules->board_shape);
+//            enum PieceType piece_type = board[destination_square_index].piece.piece_type;
+//            enum PieceColor piece_color = board[destination_square_index].piece.piece_color;
+//
+//            if (piece_type != NULL_PIECE_TYPE && piece_color == attacked_piece_color) { 
+//                continue;   // piece of own piece_color, continue
+//            }
+//            if (piece_type == ROOK || piece_type == QUEEN || piece_type == KING) {
+//                result.square_is_attacked = true;
+//                result.piece_type = NULL_PIECE_TYPE;
+//                return result;
+//            }
+//
+//            while (true) {
+//                bool increment_legal = increment_dim_of_square_if_legal(square, dim, direction, 
+//                                                                    rules->dimension_wrapping[dim], rules->board_shape[dim]);
+//                if (!increment_legal) {
+//                    break;
+//                }
+//                int destination_square_index = square_to_square_index(square, dimensions, rules->board_shape);
+//                enum PieceType piece_type = board[destination_square_index].piece.piece_type;
+//                enum PieceColor piece_color = board[destination_square_index].piece.piece_color;
+//
+//                if (destination_square_index == square_index) {
+//                    break;      // we are back to original square
+//                } 
+//                if (piece_type == NULL_PIECE_TYPE) {
+//                    continue;   // square empty, continue
+//                } 
+//                if (piece_color == attacked_piece_color) {
+//                    break;      // piece of own piece color
+//                } 
+//                if (piece_type == BISHOP || piece_type == QUEEN) {
+//                    result.
+//                    return true;    // square is attacked
+//                }
+//                break;      // opponents piece but not bishop or queen
+//            }
+//        }
+//    }
+//
+//    // Knight captures
+//    for (int dim1 = 0; dim1 < dimensions; ++dim1) {
+//        for (int dim2 = 0; dim2 < dimensions; ++dim2) {
+//            if (dim1 == dim2) {
+//                continue;
+//            }
+//            int increments[4][2] = {{1,1},{1,-1},{-1,1},{-1,-1}};
+//            for (int i = 0; i < 4; ++i) {
+//                copy_int_array(square_backup, square, dimensions);
+//                
+//                // One step - kings, bishops, queens, pawns with right orientation
+//                bool increment1_legal = increment_dim_of_square_if_legal(square, dim1, increments[i][0], 
+//                                                                    rules->dimension_wrapping[dim1], rules->board_shape[dim1]);
+//                bool increment2_legal = increment_dim_of_square_if_legal(square, dim1, increments[i][0], 
+//                                                                    rules->dimension_wrapping[dim1], rules->board_shape[dim1]);
+//                bool increment3_legal = increment_dim_of_square_if_legal(square, dim2, increments[i][1], 
+//                                                                    rules->dimension_wrapping[dim2], rules->board_shape[dim2]);
+//                if (!increment1_legal || !increment2_legal || !increment3_legal) {
+//                    continue;
+//                }
+//
+//                int destination_square_index = square_to_square_index(square, dimensions, rules->board_shape);
+//                enum PieceType piece_type = board[destination_square_index].piece.piece_type;
+//                enum PieceColor piece_color = board[destination_square_index].piece.piece_color;
+//
+//                if (piece_type == KNIGHT && piece_color != attacked_piece_color) {
+//                    return true;
+//                }
+//            }
+//        }
+//    }
+//    return false;
+//}
 
-                int destination_square_index = square_to_square_index(square, dimensions, rules->board_shape);
-                enum PieceType piece_type = board[destination_square_index].piece.piece_type;
-                enum PieceColor piece_color = board[destination_square_index].piece.piece_color;
 
-                // todo: change this for team chess
-                if (piece_type != NULL_PIECE_TYPE && piece_color == attacked_piece_color) { 
-                    continue;   // piece of own piece_color, continue
-                }
 
-                if (piece_type == BISHOP || piece_type == QUEEN || (piece_type == KING && rules->dimensions > 2)) {
-                    return true;    // square is attacked
-                } else if (piece_type == PAWN) {
-                    bool dim1_forward_dim = rules->is_forward_dimension[dim1];
-                    bool dim2_forward_dim = rules->is_forward_dimension[dim2];
-                    enum Direction piece_direction = board[destination_square_index].piece.direction;
-                    if (dim1_forward_dim) {
-                        if (    (increments[dim1][0] ==  1 && piece_direction == BACKWARDS && piece_color == PIECE_COLOR_WHITE) ||
-                                (increments[dim1][0] ==  1 && piece_direction == FORWARDS  && piece_color == PIECE_COLOR_BLACK) ||
-                                (increments[dim1][0] == -1 && piece_direction == FORWARDS  && piece_color == PIECE_COLOR_WHITE) ||
-                                (increments[dim1][0] == -1 && piece_direction == BACKWARDS && piece_color == PIECE_COLOR_BLACK)) {
-                            return true;
-                        }
-                    } else {
-                        if (    (increments[dim1][0] ==  1 && piece_direction == LEFT  && piece_color == PIECE_COLOR_WHITE) ||
-                                (increments[dim1][0] ==  1 && piece_direction == RIGHT && piece_color == PIECE_COLOR_BLACK) ||
-                                (increments[dim1][0] == -1 && piece_direction == RIGHT && piece_color == PIECE_COLOR_WHITE) ||
-                                (increments[dim1][0] == -1 && piece_direction == LEFT  && piece_color == PIECE_COLOR_BLACK)) {
-                            return true;
-                        }
-                    }
-                    if (dim2_forward_dim) {
-                        if (    (increments[dim2][1] ==  1 && piece_direction == BACKWARDS && piece_color == PIECE_COLOR_WHITE) ||
-                                (increments[dim2][1] ==  1 && piece_direction == FORWARDS  && piece_color == PIECE_COLOR_BLACK) ||
-                                (increments[dim2][1] == -1 && piece_direction == FORWARDS  && piece_color == PIECE_COLOR_WHITE) ||
-                                (increments[dim2][1] == -1 && piece_direction == BACKWARDS && piece_color == PIECE_COLOR_BLACK)) {
-                            return true;
-                        }
-                    } else {
-                        if (    (increments[dim2][1] ==  1 && piece_direction == LEFT  && piece_color == PIECE_COLOR_WHITE) ||
-                                (increments[dim2][1] ==  1 && piece_direction == RIGHT && piece_color == PIECE_COLOR_BLACK) ||
-                                (increments[dim2][1] == -1 && piece_direction == RIGHT && piece_color == PIECE_COLOR_WHITE) ||
-                                (increments[dim2][1] == -1 && piece_direction == LEFT  && piece_color == PIECE_COLOR_BLACK)) {
-                            return true;
-                        }
-                    }
-                }
+// QUESTION: Is this algorithm actually faster than checking every opponents move for checks on own king and then checking every 
+// own move and for those check every opponents move for checks on own king
+// time complexity: #own_moves * #opponents_move
+//
+// ANSWER:
+// time complexity: queen_moves + board_length * queen_moves + queen_moves
 
-                // Steps beyond first step - only bishops and queens
-                while (true) {
-                    bool increment1_legal = increment_dim_of_square_if_legal(square, dim1, increments[i][0], 
-                                                                    rules->dimension_wrapping[dim1], rules->board_shape[dim1]);
-                    bool increment2_legal = increment_dim_of_square_if_legal(square, dim2, increments[i][1], 
-                                                                    rules->dimension_wrapping[dim2], rules->board_shape[dim2]);
-                    if (!increment1_legal || !increment2_legal) {
-                        break;  // edge of board
-                    }
+// ARE WE CHECKMATED CURRENTLY:
+// - check if own king is attacked diagonally, horizontally, by knight with the inbetween squares returned
+//
+//   if diag or hori:
+// - check if something can be moved to any of the inbetween squares diagonally, horizontally, by knight WITHOUT inbeetween squares returned
+//
+//   if something can block:
+// - check if king is still attacked after the block
+//
+// MOVES THAT PUT OWN KING IN CHECK:
+// - check if own king after the move is attacked diagonally, horizontally, by knight
 
-                    int destination_square_index = square_to_square_index(square, dimensions, rules->board_shape);
-                    enum PieceType piece_type = board[destination_square_index].piece.piece_type;
-                    enum PieceColor piece_color = board[destination_square_index].piece.piece_color;
+struct cm_SquareAttackedResult { // todo: can we declare the name here and define it later? test this
+    //bool square_is_attacked; 
+    //enum PieceType piece_type; 
+    bool more_than_one_step;
+    int dim1; 
+    int dim2; 
+    int dim1_increment; 
+    int dim2_increment;
+};
 
-                    if (destination_square_index == square_index) {
-                        break;      // we are back to original square
-                    }
-                    if (piece_type == NULL_PIECE_TYPE) {
-                        continue;   // square empty, continue
-                    }
-                    if (piece_color == attacked_piece_color) {
-                        break;      // piece of own piece_color
-                    }
-                    if (piece_type == BISHOP || piece_type == QUEEN) {
-                        return true;    // square is attacked
-                    }
-                    break;      // opponents piece but not bishop or queen
-                }
-            }
-        }
-    }
-
-    // Horizontal captures. One step - king
-    for (int dim = 0; dim < dimensions; ++dim) {
-        for (int direction = -1; direction <= 1; direction += 2) {
-            copy_int_array(square_backup, square, dimensions);
-                
-            // One step - kings
-            bool increment_legal = increment_dim_of_square_if_legal(square, dim, direction, 
-                                                                    rules->dimension_wrapping[dim], rules->board_shape[dim]);
-            if (!increment_legal) {
-                continue;
-            }
-            int destination_square_index = square_to_square_index(square, dimensions, rules->board_shape);
-            enum PieceType piece_type = board[destination_square_index].piece.piece_type;
-            enum PieceColor piece_color = board[destination_square_index].piece.piece_color;
-
-            if (piece_type != NULL_PIECE_TYPE && piece_color == attacked_piece_color) { 
-                continue;   // piece of own piece_color, continue
-            }
-            if (piece_type == ROOK || piece_type == QUEEN || piece_type == KING) {
-                return true;    // square is attacked
-            }
-
-            while (true) {
-                bool increment_legal = increment_dim_of_square_if_legal(square, dim, direction, 
-                                                                    rules->dimension_wrapping[dim], rules->board_shape[dim]);
-                if (!increment_legal) {
-                    break;
-                }
-                int destination_square_index = square_to_square_index(square, dimensions, rules->board_shape);
-                enum PieceType piece_type = board[destination_square_index].piece.piece_type;
-                enum PieceColor piece_color = board[destination_square_index].piece.piece_color;
-
-                if (destination_square_index == square_index) {
-                    break;      // we are back to original square
-                } 
-                if (piece_type == NULL_PIECE_TYPE) {
-                    continue;   // square empty, continue
-                } 
-                if (piece_color == attacked_piece_color) {
-                    break;      // piece of own piece color
-                } 
-                if (piece_type == BISHOP || piece_type == QUEEN) {
-                    return true;    // square is attacked
-                }
-                break;      // opponents piece but not bishop or queen
-            }
-        }
-    }
-
-    // Knight captures
-    for (int dim1 = 0; dim1 < dimensions; ++dim1) {
-        for (int dim2 = 0; dim2 < dimensions; ++dim2) {
-            if (dim1 == dim2) {
-                continue;
-            }
-            int increments[4][2] = {{1,1},{1,-1},{-1,1},{-1,-1}};
-            for (int i = 0; i < 4; ++i) {
-                copy_int_array(square_backup, square, dimensions);
-                
-                // One step - kings, bishops, queens, pawns with right orientation
-                bool increment1_legal = increment_dim_of_square_if_legal(square, dim1, increments[i][0], 
-                                                                    rules->dimension_wrapping[dim1], rules->board_shape[dim1]);
-                bool increment2_legal = increment_dim_of_square_if_legal(square, dim1, increments[i][0], 
-                                                                    rules->dimension_wrapping[dim1], rules->board_shape[dim1]);
-                bool increment3_legal = increment_dim_of_square_if_legal(square, dim2, increments[i][1], 
-                                                                    rules->dimension_wrapping[dim2], rules->board_shape[dim2]);
-                if (!increment1_legal || !increment2_legal || !increment3_legal) {
-                    continue;
-                }
-
-                int destination_square_index = square_to_square_index(square, dimensions, rules->board_shape);
-                enum PieceType piece_type = board[destination_square_index].piece.piece_type;
-                enum PieceColor piece_color = board[destination_square_index].piece.piece_color;
-
-                if (piece_type == KNIGHT && piece_color != attacked_piece_color) {
-                    return true;
-                }
-            }
-        }
-    }
+// --- These five static funtions are used for the player_is_checkmated calculation (therefor the cm prefix). And also by the new 
+// move_puts_own_king_in_check function (?) ---
+// REMEMBER -- if king attacked from two directions there are no blocking moves. Unless multiple moves are allowed... So we
+// probably can't compute check-mates in that case.
+// --- attacking moves ---
+// Returns a list of inbetween squares and true or false:
+static bool cm_square_attacked_diagonally(struct cm_SquareAttackedResult *square_attacked_result) {   // pawn, bishop, queen or king
+    return false;
+}
+static bool cm_square_attacked_horizontally(struct cm_SquareAttackedResult *square_attacked_result) {  // rook, queen or king
+    return false;
+}
+// Just returns true or false
+static bool cm_square_attacked_by_knight() {
     return false;
 }
 
-//TODO
+// --- blocking moves ---
+// Dont have to check king moves. We never use this to compute checkmates if a king is allowed to block
+// Dont have to check diagonal pawn moves except en passant
+static bool cm_square_can_be_moved_to_diagonally();     // pawn en passant, bishop, queen
+static bool cm_square_can_be_moved_to_horizontally();   // pawn, rook, queen
+
 static bool player_is_checkmated(enum PieceColor piece_color, struct GameState *game_state, struct Rules *rules) {
-    // Variables
     struct Square *board = game_state->board;
-    int dimensions = rules->dimensions;
-    int *board_shape = rules->board_shape;
     int board_length = 1;
-    for (int i = 0; i < dimensions; ++i) {
-        board_length *= board_shape[i];
+    for (int i = 0; i < rules->dimensions; ++i) {
+        board_length *= rules->board_shape[i];
     }
 
     // Find own king. Assumes it exists
+    // TODO, maybe - keep track of position of kings (plural) instead?
     int own_king_square = -1;
     for (int square_index = 0; square_index < board_length; ++square_index) {
         if (board[square_index].piece.piece_type == KING && board[square_index].piece.piece_color == piece_color) {
@@ -1146,24 +1242,115 @@ static bool player_is_checkmated(enum PieceColor piece_color, struct GameState *
         }
     }
     if (own_king_square == -1) {
-        return true;    //this can happen in gravity chess (?) how?
+        return true;    //this can happen in gravity chess. Moving the king legally but it falls down and is then captured the next move
+                        //shouldnt use checkmating win condition in gravity chess though?
     }
-
-    // Check if own king attacked
-    if (!square_is_attacked(own_king_square, piece_color, board, rules)) {
+    // check if own king in check horizontally
+    // check if own king in check diagonally
+    // check if own king in check by knight
+    struct cm_SquareAttackedResult square_attacked_result;
+    bool square_attacked_horizontally, square_attacked_diagonally, square_attacked_by_knight;
+    square_attacked_horizontally = cm_square_attacked_horizontally(&square_attacked_result);
+    if (!square_attacked_horizontally) {
+        square_attacked_diagonally = cm_square_attacked_diagonally(&square_attacked_result);
+    }
+    if (!square_attacked_horizontally && !square_attacked_diagonally) {
+        square_attacked_by_knight = cm_square_attacked_by_knight();
+    }
+    if (!square_attacked_horizontally && !square_attacked_diagonally && !square_attacked_by_knight) {
         return false;
     }
 
-    // Check if all squares king can move to attacked
-    struct Move king_moves[MAX_MOVES_SINGLE_PIECE];
-    get_king_moves(king_moves, own_king_square, true, board, rules);
+    // if king in check:
+    // check if all squares the king can move to are also attacked diagonally, horizontally or by knight. move king and then move
+    // back
+    //int moves[MAX_SOMETHING];
+    //get_king_moves();
+    //if ( cm_square_attacked_horizontally() || cm_square_attacked_diagonally() || cm_square_attacked_by_knight() ) {
+    //}
 
-    for (int i = 0; king_moves[i].destination_square != -1; ++i) {
-        if(!square_is_attacked(king_moves[i].destination_square, piece_color, board, rules)) {
-            return false;
-        }
-    }
-    return true;
+    //
+    // if horizontally or diagonally:
+    // increment_dim_of_square_if_legal in that direction and run cm_square_can_be_moved_to_diagonally/horizontally on each square
+    // until we get to a piece
+    //
+    // check is own king still in check after the blocking move
+    return false;
+}
+
+//TODO
+// old? can be removed?
+//static bool player_is_checkmated(enum PieceColor piece_color, struct GameState *game_state, struct Rules *rules) {
+//    struct Square *board = game_state->board;
+//    int board_length = 1;
+//    for (int i = 0; i < rules->dimensions; ++i) {
+//        board_length *= rules->board_shape[i];
+//    }
+//
+//    // Find own king. Assumes it exists
+//    // TODO, maybe - keep track of position of kings (plural) instead?
+//    int own_king_square = -1;
+//    for (int square_index = 0; square_index < board_length; ++square_index) {
+//        if (board[square_index].piece.piece_type == KING && board[square_index].piece.piece_color == piece_color) {
+//            own_king_square = square_index;
+//            break;
+//        }
+//    }
+//    if (own_king_square == -1) {
+//        return true;    //this can happen in gravity chess. Moving the king legally but it falls down and is then captured the next move
+//                        //shouldnt use checkmating win condition in gravity chess though?
+//    }
+//
+//    // Check if own king attacked
+//    if (square_attacked_from_square(own_king_square, piece_color, board, rules) == -1) {
+//        return false;
+//    }
+//
+//    // Check if all squares king can move to attacked
+//    // Bug: have to actually move the king there first, or we miss attacks through x-ray through the king
+//    // or just temporarily remove the king from its current square
+//    struct Move king_moves[MAX_MOVES_SINGLE_PIECE];
+//    get_king_moves(king_moves, own_king_square, true, board, rules);
+//
+//    // remove own king temporarily
+//    board[own_king_square].piece.piece_type = NULL_PIECE_TYPE;
+//
+//    for (int i = 0; king_moves[i].destination_square != -1; ++i) {
+//        if(square_attacked_from(king_moves[i].destination_square, piece_color, board, rules) == -1) {
+//            return false;
+//        }
+//    }
+//    // put back own king
+//    board[own_king_square].piece.piece_type = KING;
+//
+//    // TODO: check if piece can block the attack
+//    // Previous move can have been a double check -> so try blocking the one that was detected and then see if king still attacked
+//    return true;
+//}
+
+// TODO!!!
+static bool move_puts_own_king_in_check(struct Move move, struct Square *board, struct Rules *rules) {
+    int own_king_square = 7;    // TODO
+    enum PieceColor own_piece_color = board[move.origin_square].piece.piece_color;    //TODO
+
+    // update board
+    struct Piece origin_square_piece = board[move.origin_square].piece;
+    struct Piece destination_square_piece = board[move.destination_square].piece;
+    board[move.origin_square].piece.piece_type = NULL_PIECE_TYPE;
+    board[move.destination_square].piece = origin_square_piece;
+
+    // check if own king is now attacked
+    // TODO!!!
+    //int king_attacked_from_square = square_is_attacked(own_king_square, own_piece_color, board, rules);
+    //if (king_attacked_from_square == -1) {  // if not attacked
+    //}
+
+    // revert board
+    board[move.origin_square].piece.piece_type = origin_square_piece.piece_type;
+    board[move.destination_square].piece = destination_square_piece;
+
+    // return
+    return false;
 }
 
 static bool piece_color_king_captured(bool piece_color, struct GameState *game_state, struct Rules *rules) {
@@ -1376,3 +1563,4 @@ static void evaluate_gravity(struct Square board[], struct Rules *rules) {
         }
     }
 }
+

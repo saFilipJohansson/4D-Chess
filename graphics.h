@@ -1,7 +1,7 @@
 #ifndef GRAPHICS_H
 #define GRAPHICS_H
 
-#include "chess.h"
+#include "chess_types.h"
 #include "SDL.h"
 
 enum Texture {
